@@ -1,12 +1,3 @@
-// SPDX-License-Identifier: GPL-2.0
-/*
- * elevator.c - pet elevator kernel module
- *
- * Provides /proc/elevator and implements the start_elevator, issue_request and
- * stop_elevator system calls by filling in the function pointers exported by the
- * kernel's syscalls/syscalls.c. A single kthread drives the elevator; a single
- * mutex protects all shared state (floor queues, rider list and counters).
- */
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -36,7 +27,6 @@ MODULE_VERSION("1.0");
 #define LOAD_MS      1000
 #define SAFETY_MS    10
 
-/* Function pointers exported by the kernel's syscalls/syscalls.c */
 extern long (*start_elevator_ptr)(void);
 extern long (*issue_request_ptr)(int, int, int);
 extern long (*stop_elevator_ptr)(void);
@@ -56,7 +46,6 @@ struct pet {
 	struct list_head node;
 };
 
-/* All fields below are protected by elev_lock */
 static struct {
 	enum elevator_state state;
 	int floor;
@@ -75,16 +64,11 @@ static DECLARE_WAIT_QUEUE_HEAD(elev_wq);
 static struct task_struct *elev_thread;
 static struct proc_dir_entry *proc_entry;
 
-/* ------------------------------------------------------------------ */
-/* Helpers (caller must hold elev_lock unless noted)                  */
-/* ------------------------------------------------------------------ */
-
 static bool pet_fits(const struct pet *p)
 {
 	return elev.count < MAX_PETS && elev.load + pet_weight[p->type] <= MAX_WEIGHT;
 }
 
-/* True if the elevator should stop at floor f to unload or load someone */
 static bool floor_wants_stop(int f)
 {
 	struct pet *p;
@@ -101,7 +85,6 @@ static bool floor_wants_stop(int f)
 	return false;
 }
 
-/* True if some floor strictly ahead in direction dir wants a stop */
 static bool target_ahead(int dir)
 {
 	int f;
@@ -127,7 +110,6 @@ static void unload_pets(void)
 	}
 }
 
-/* Board pets from the current floor in FIFO order until the next one won't fit */
 static void load_pets(void)
 {
 	struct list_head *q = &elev.queue[elev.floor];
@@ -167,11 +149,6 @@ static void free_all_pets(void)
 	elev.waiting = 0;
 }
 
-/* ------------------------------------------------------------------ */
-/* Elevator thread                                                    */
-/* ------------------------------------------------------------------ */
-
-/* Lock-free hint used as the wait_event condition; re-checked under the lock */
 static bool elevator_has_work(void)
 {
 	return READ_ONCE(elev.state) != OFFLINE &&
@@ -179,7 +156,6 @@ static bool elevator_has_work(void)
 		READ_ONCE(elev.stopping));
 }
 
-/* Decide the next action. Caller holds elev_lock. */
 static enum step_action elevator_step(void)
 {
 	if (elev.stopping && elev.count == 0) {
@@ -239,10 +215,6 @@ static int elevator_thread_fn(void *data)
 	return 0;
 }
 
-/* ------------------------------------------------------------------ */
-/* System call implementations                                        */
-/* ------------------------------------------------------------------ */
-
 static long elevator_start(void)
 {
 	long ret = 0;
@@ -301,10 +273,6 @@ static long elevator_stop(void)
 	return ret;
 }
 
-/* ------------------------------------------------------------------ */
-/* /proc/elevator                                                     */
-/* ------------------------------------------------------------------ */
-
 static int elevator_proc_show(struct seq_file *m, void *v)
 {
 	struct pet *p;
@@ -352,10 +320,6 @@ static const struct proc_ops elevator_proc_ops = {
 	.proc_release	= single_release,
 };
 
-/* ------------------------------------------------------------------ */
-/* Module init / exit                                                 */
-/* ------------------------------------------------------------------ */
-
 static int __init elevator_init(void)
 {
 	int f;
@@ -374,12 +338,10 @@ static int __init elevator_init(void)
 	elev_thread = kthread_run(elevator_thread_fn, NULL, "kelevator");
 	if (IS_ERR(elev_thread)) {
 		int err = PTR_ERR(elev_thread);
-
 		proc_remove(proc_entry);
 		return err;
 	}
 
-	/* Only expose the syscalls once everything else is ready */
 	start_elevator_ptr = elevator_start;
 	issue_request_ptr = elevator_issue_request;
 	stop_elevator_ptr = elevator_stop;
