@@ -153,7 +153,7 @@ static bool elevator_has_work(void)
 {
 	return READ_ONCE(elev.state) != OFFLINE &&
 	       (READ_ONCE(elev.waiting) > 0 || READ_ONCE(elev.count) > 0 ||
-		READ_ONCE(elev.stopping));
+		READ_ONCE(elev.stopping) || READ_ONCE(elev.state) == LOADING);
 }
 
 static enum step_action elevator_step(void)
