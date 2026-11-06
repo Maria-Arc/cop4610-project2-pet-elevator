@@ -54,7 +54,7 @@ elevator/
 │   ├── part1.c
 │   ├── part1.trace
 ├── part2/
-│   ├── src/
+│   ├── my_timer.c
 │   └── Makefile
 ├── part3/
 │   ├── src/
