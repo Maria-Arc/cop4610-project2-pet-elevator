@@ -1,159 +1,147 @@
 # Elevator
 
-[Description]
+We modified the linux kernel and built a pet elevator within it. 
+COP4610 Project 2: Pet Elevator
 
 ## Group Members
-- **John Doe**: jd19@fsu.edu
-- **Jane Smith**: js19@fsu.edu
-- **Alex Brown**: ab19@fsu.edu
+- **Rebecca Gorman**: rkg23a@fsu.edu
+- **Maria Arcis Pineda**: mea23a@fsu.edu
+- **Nicholas Brion**: npb22c@fsu.edu
 ## Division of Labor
 
 ### Part 1: System Call Tracing
-- **Responsibilities**: [Description]
-- **Assigned to**: John Doe
+- **Responsibilities**: Trace and analyze sysem calls
+- **Assigned to**: Maria Arcis Pineda
 
 ### Part 2: Timer Kernel Module
-- **Responsibilities**: [Description]
-- **Assigned to**: Jane Smith
+- **Responsibilities**: Implementation of the timer kernel module
+- **Assigned to**: Maria Arcis Pineda, Rebecca Gorman
 
 ### Part 3a: Adding System Calls
-- **Responsibilities**: [Description]
-- **Assigned to**: Alex Brown
+- **Responsibilities**: Added the elevator system calls to the kernel
+- **Assigned to**: Nicolas Brion, Maria Arcis Pineda
 
 ### Part 3b: Kernel Compilation
-- **Responsibilities**: [Description]
-- **Assigned to**: Alex Brown, Jane Smith
+- **Responsibilities**: compiled the modified kernel
+- **Assigned to**: Maria Arcis Pineda
 
 ### Part 3c: Threads
-- **Responsibilities**: [Description]
-- **Assigned to**: Alex Brown, Jane Smith
+- **Responsibilities**: implemented kernel threads for elevator operations
+- **Assigned to**: Nicolas Brion
 
 ### Part 3d: Linked List
-- **Responsibilities**: [Description]
-- **Assigned to**: Jane Smith
+- **Responsibilities**: implemented linked lists to manage elevator requests
+- **Assigned to**: Nicolas Brion, Rebecca Gorman
 
 ### Part 3e: Mutexes
-- **Responsibilities**: [Description]
-- **Assigned to**: John Doe
+- **Responsibilities**: implemented mutexes to synchronize shared data
+- **Assigned to**: Nicolas Brion
 
 ### Part 3f: Scheduling Algorithm
-- **Responsibilities**: [Description]
-- **Assigned to**: Alex Brown, John Doe
+- **Responsibilities**: Implemented and debugged the elevator scheduling algorithm 
+- **Assigned to**: Nicolas Brion, Rebecca Gorman
+
+### Testing and Documentation 
+- **Responsibilities**: Tested all functionality and fixed bugs. Completed project documentation. 
+- **Assigned to**: Rebecca Gorman
 
 ## File Listing
 ```
 elevator/
-├── Makefile
 ├── part1/
 │   ├── empty.c
 │   ├── empty.trace
 │   ├── part1.c
 │   ├── part1.trace
-│   └── Makefile
 ├── part2/
 │   ├── src/
 │   └── Makefile
 ├── part3/
 │   ├── src/
+|   |      ├──elevator.c
+|   |      └── Makefile
 │   ├── tests/
+|   |      ├── elevator-test
+|   |      └──system-calls-test
 │   ├── Makefile
 │   └── sys_call.c
-├── Makefile
+├── .gitignore
 └── README.md
 
 ```
 # How to Compile & Execute
 
 ### Requirements
-- **Compiler**: e.g., `gcc` for C/C++, `rustc` for Rust.
-- **Dependencies**: List any libraries or frameworks necessary (rust only).
+- **Compiler**: GCC
+- **Dependencies**: stdio
 
 ## Part 1
 
 ### Compilation
-For a C/C++ example:
-```bash
-make
-```
-This will build the executable in ...
+gcc -o empty empty.c
+gcc -o part1 part1.c 
+
 ### Execution
-```bash
-make run
-```
-This will run the program ...
+strace -o empty.trace ./empty 
+strace -o part1.trace ./part1
 
 ## Part 2
 
 ### Compilation
-For a C/C++ example:
-```bash
 make
-```
-This will build the executable in ...
+sudo insmod my_timer.ko
+
 ### Execution
-```bash
-make run
-```
-This will run the program ...
+cat /proc/timer
 
 
 ## Part 3
 
 ### Compilation
-For a C/C++ example:
-```bash
 make
-```
-This will build the executable in ...
+sudo insmod elevator.ko
+
 ### Execution
-```bash
-make run
-```
-This will run the program ...
+cat /proc/elevator
 
 ## Development Log
-Each member records their contributions here.
 
-### [Member 1]
-
-| Date       | Work Completed / Notes |
-|------------|------------------------|
-| YYYY-MM-DD | [Description of task]  |
-| YYYY-MM-DD | [Description of task]  |
-| YYYY-MM-DD | [Description of task]  |
-
-### [Member 2]
+### [Rebecca Gorman]
 
 | Date       | Work Completed / Notes |
 |------------|------------------------|
-| YYYY-MM-DD | [Description of task]  |
-| YYYY-MM-DD | [Description of task]  |
-| YYYY-MM-DD | [Description of task]  |
+| 2026-11-01 | Set up elevator system calls and initialized repo |
+| 2026-11-02 | worked on part 2 and organied the project folder structure |
+| 2026-05-2026 | testing and documentation |
 
-
-### [Member 3]
+### [Maria Arcis Pineda]
 
 | Date       | Work Completed / Notes |
 |------------|------------------------|
-| YYYY-MM-DD | [Description of task]  |
-| YYYY-MM-DD | [Description of task]  |
-| YYYY-MM-DD | [Description of task]  |
+| 2026-11-01 |Set up elevator system calls and initialized repo  |
+| 2026-11-02 | worked on part 2 and organied the project folder structure   |
+| 2026-11-05 | merged part 2 and 3 merge  |
+
+
+### [Nicolas Brion]
+
+| Date       | Work Completed / Notes |
+|------------|------------------------|
+| 2026-11-04 | updated elevator.c and contributed to part 3 implementation |
+| 2026-11-05 | part 3 contributions were merged into the main branch |
+
 
 
 ## Meetings
-Document in-person meetings, their purpose, and what was discussed.
 
 | Date       | Attendees            | Topics Discussed | Outcomes / Decisions |
 |------------|----------------------|------------------|-----------------------|
-| YYYY-MM-DD | [Names]              | [Agenda items]   | [Actions/Next steps]  |
-| YYYY-MM-DD | [Names]              | [Agenda items]   | [Actions/Next steps]  |
-| YYYY-MM-DD | [Names]              | [Agenda items]   | [Actions/Next steps]  |
+| 2026-10-27 | Rebecca Maria Nico            | talk about division of labor and when we will be using the vm to not override anyone   | rebecca and maria to do parts 1 and 2  |
+| 2026-11-02 | Rebecca Maria Nico| status updates and discussion on final steps  | nico finishing implementation and rebecca testing with maria |
 
 
-
-## Bugs
-- **Bug 1**: This is bug 1.
-- **Bug 2**: This is bug 2.
-- **Bug 3**: This is bug 3.
 
 ## Considerations
+Rebecca and Maria pairprogrammed for parts 1 and 2. We tested the elevator for 5, 10, 100, and 10000. 
+
+Each of us used 3 days, final due date is 11/5 @ 11:59 p.m.
